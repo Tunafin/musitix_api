@@ -135,6 +135,8 @@ const activityScheduleSchema: Schema<ActivitySchedule> = new mongoose.Schema({
   },
 });
 
+export const ActivityScheduleModel = mongoose.model<ActivitySchedule>('activity_schedules', activityScheduleSchema);
+
 const activitySchema: Schema<Activity> = new mongoose.Schema({
   title: {
     type: String,
@@ -195,15 +197,19 @@ const activitySchema: Schema<Activity> = new mongoose.Schema({
     required: [true, '自定義注意事項必填'],
     trim: false
   },
-  schedules: {
-    type: [activityScheduleSchema],
-    validate: [
-      function (this: Activity) {
-        return !!(this.schedules?.length > 0);
-      },
-      '活動場次必填(至少一項)'
-    ]
-  },
+  schedules: [{
+    type: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'activity_schedules'
+    },
+    // TODO
+    // validate: [
+    //   function (this: Activity) {
+    //     return !!(this.schedules?.length > 0);
+    //   },
+    //   '活動場次必填(至少一項)'
+    // ]
+  }],
   saleStartDate: {
     type: Date,
     required: [true, '售票開始時間必填']
